@@ -5,7 +5,6 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import LoginForm
 from django.views.decorators.csrf import csrf_protect
 
-# Create your views here.
 
 def login_view(request: HttpRequest):
     if request.method == "GET":
@@ -28,8 +27,9 @@ def register_view(request: HttpRequest):
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            return redirect('/')
+            if user is not None:
+                login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                return redirect('/')
     else:
         form = UserCreationForm()
     return render(request, 'authentification/signin.html', {'form': form})
